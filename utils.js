@@ -232,6 +232,7 @@ exports.escapeRegExp = escapeRegExp;
  * find corresponding opening block
  */
 exports.getMatchingOpeningToken = function (tokens, i) {
+  
   if (tokens[i].type === 'softbreak') {
     return false;
   }
@@ -239,16 +240,20 @@ exports.getMatchingOpeningToken = function (tokens, i) {
   if (tokens[i].nesting === 0) {
     return tokens[i];
   }
-
+  let hasDifferentLevel = hasOpeningTagDifferentLevel(tokens[i])
   let level = tokens[i].level;
   let type = tokens[i].type.replace('_close', '_open');
-
   for (; i >= 0; --i) {
-    if (tokens[i].type === type && tokens[i].level === level) {
+    if (tokens[i].type === type && (tokens[i].level === level || hasDifferentLevel)) {
       return tokens[i];
     }
   }
 };
+
+function hasOpeningTagDifferentLevel({tag}){
+  return ['em','strong'].some(_tag=>tag===tag)
+}
+
 
 
 /**
